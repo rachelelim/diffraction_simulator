@@ -1,0 +1,40 @@
+analysis_name: test_cube3_10micron
+working_dir: '/Volumes/Rachel1/Diffraction_Model/test/'
+
+experiment:
+  detector_file: '/Volumes/Rachel1/Diffraction_Model/dexela_instrument.yml'
+  omega:
+    start: -180
+    stop: 180
+    step: 0.5 #currently not sure how to change step size
+
+energy:
+  mono: HEM   #HEM or HRM (APS high-energy or high-res monos respectively), talk to REL if using HRM
+  nominal: 61.332
+  num_bins: 11   #odd number works best here
+
+
+grains_to_diffract:   #will use one of: microstructure file, then grains_file, then given grain parameters
+  microstructure:
+    file: 'Test_cube.Dream3d'
+    voxel_size: 5   #in microns
+    center: [0,0,0]
+  grains_file:
+  grain_parameters:
+    orientation: [ 0.00129206699833,     -0.0394199222609,      -0.214705446672]   # 'random' or expmap
+    centroid: [0., 0., 0.]
+    stretch: [ 0.996542104068,       0.996471287776,       0.996462479595]
+  mis_bound: 0.25   #in degrees
+  mis_space: 0.25   #also in degrees
+
+material: #give materials file or put in parameters for material
+  materials_file:
+    filename:
+    active_material:
+  material_parameters:
+    mat_name: gold
+    space_group: 225   #225 for FCC, 194 for HCP
+    lparms: [4.0782, 4.0782, 4.0782, 90, 90, 90]   #a, b, c, alpha, beta, gamma
+
+
+
