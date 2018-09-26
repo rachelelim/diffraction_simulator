@@ -1,0 +1,56 @@
+\documentclass[12pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{url}
+\usepackage{indentfirst}
+\usepackage{gensymb}
+\usepackage{graphicx}
+\usepackage{pdfpages}
+\usepackage{wrapfig}
+\usepackage{float}
+\usepackage[caption = false]{subfig}
+\usepackage{amsmath}
+\usepackage{hyperref}
+\hypersetup{colorlinks=true, linkcolor=blue, filecolor=magenta, urlcolor=cyan}
+
+
+\begin{document}
+	
+	\title{HEXRD-based Diffraction Simulator}
+	\author{Rachel E. Lim\thanks{Carnegie Mellon University}}
+	%\date{}
+	
+	\maketitle
+	
+Disclaimer: You need HEXRD v0.5.x in order to run this.
+
+
+\section{Configuration File}
+The configuration file for the diffraction simulator is a yaml file with four main sections:  \hyperref[sec:experiment]{experiment}, \hyperref[sec:energy]{energy}, \hyperref[sec:grains]{grains\textunderscore to\textunderscore diffract}, and \hyperref[sec:material]{material}. As per yaml format, you can add whatever other meta-data you want to the file and it will still work.
+	
+	\subsection{Experiment} \label{sec:experiment}
+	The detector file needed is a HEXRD format detector file. This contains information such as detector translation and tilts, pixel size, detector shape, and rotation axis tilt. The omega values in HEXRD default to -180 to 180 with a 0.25$\degree$ step size which is the normal method for APS 1-ID. Other omega ranges and step sizes should be working, but should be double checked. 
+	
+	\subsection{Energy} \label{sec:energy}
+	Currently, this is hard coded for the two monochromators at APS 1-ID. Use HEM for the regular two bounce mono and HRM for the high-res four bounce mono. This can be easily fixed to take an energy profile function.
+	
+	\subsection{Grains to Diffract} \label{sec:grains}
+	There are three different options for inputs. In order that the code checks for them: a Dream3d microstructure file, a HEXRD grains.out file, or specified grain parameters. If using either a grains file or a specific explicitly defined grain, there is an option to add some amount of uniform misorientation within the grain. The misorientation bound defines the total amount of misorientation while the misorientation spacing defines the size of the steps to reach the total.
+	
+		\subsubsection{Dream3d File}
+		If using a Dream3d microstructure file, the orientations must be in axis-angle form. The code currently assumes cubic voxels, and the side length of a voxel must be defined in microns. Currently the orientations are being pulled from the Dream3d file from the `SyntheticVolumeDataContainer' but that may not work for reconstructed data (as opposed to synthetic data).
+		
+		\subsubsection{Grains File}
+		Only the filename for a grains.out file is necessary here.
+		
+		\subsubsection{Specific Grain}
+		The orientation (as an exponential map), centroid (in mm per grains.out format), and stretch (I'll fix it to take strain some day) as required. 
+
+	
+	\subsection{Material Parameters} \label{sec:material}
+	This takes either a HEXRD standard materials file, or you can define your own material. In order to define your own material, the space group (225 for FCC, 194 for HCP) and lattice parameters $(a, b, c, \alpha, \beta, \gamma)$ are required.
+
+\section{Outputs}
+	
+
+
+\end{document}
