@@ -46,7 +46,7 @@ warnings.filterwarnings('ignore', category=DeprecationWarning)
 #%% User Input
 #==============================================================================
 
-cfg_filename = 'diff_sim_config_v2.yml'
+cfg_filename = 'diff_sim_config.yml'
 
 cfg = yaml.load(open(cfg_filename, 'r'))
 
@@ -132,7 +132,7 @@ for det_id in instr.detectors:
     det_Y = det_params[det_id]['detector']['pixels']['rows']
     diff_coord[det_id] = np.empty([0,2])
     diff_angs[det_id] = np.empty([0])
-    det_int[det_id] = np.zeros([int((ome_stop-ome_start)/ome_step)+1,det_Y,det_X],dtype = np.uint16)
+    det_int[det_id] = np.zeros([int((ome_stop-ome_start)/ome_step)+1,det_Y,det_X],dtype = np.uint32)
     
 
 ##simulates for energy bandwidth##
@@ -177,37 +177,37 @@ steps = diffutil.make_ome_wedge(ome_start,ome_stop,int((ome_stop-ome_start)/ome_
 diffutil.save_fc(instr, steps, det_int,analysis_name)
 
 
-#%%
-
-x_y_ome = {}
-for det_id in instr.detectors:
-    x_y_ome[det_id] = np.hstack([diff_coord[det_id],np.expand_dims(diff_angs[det_id],axis=1)])
-
-#%% plotting
-for det_id in instr.detectors:
-    pix_size = det_params[det_id]['detector']['pixels']['size']
-    
-    
-    plot_width, plot_height = diffutil.plot_shape(det_params,det_id)
-    
-    XY = diff_coord[det_id]*pix_size #change back to micron coords
-    
-    
-    fig = plt.figure(figsize = (plot_width, plot_height))
-    plt.plot(XY[:,0],XY[:,1],'.',markersize=1)
-    plt.title(det_id,fontsize=20)   
-    plt.show()
-
-
- #%%
-    
-    
-    
-detector_image = plt.figure(figsize = (plot_width*2, plot_height*2))
-#    detector_image = plt.figure()
-ax = plt.axes()
-plt.imshow(det_int[det_id],cmap='inferno')
-plt.colorbar()
-#plt.ylim(bottom = 1900,top= 2000)
-#plt.xlim(left = 850, right = 950)
-plt.title(det_id,fontsize=20)
+##%%
+#
+#x_y_ome = {}
+#for det_id in instr.detectors:
+#    x_y_ome[det_id] = np.hstack([diff_coord[det_id],np.expand_dims(diff_angs[det_id],axis=1)])
+#
+##%% plotting
+#for det_id in instr.detectors:
+#    pix_size = det_params[det_id]['detector']['pixels']['size']
+#    
+#    
+#    plot_width, plot_height = diffutil.plot_shape(det_params,det_id)
+#    
+#    XY = diff_coord[det_id]*pix_size #change back to micron coords
+#    
+#    
+#    fig = plt.figure(figsize = (plot_width, plot_height))
+#    plt.plot(XY[:,0],XY[:,1],'.',markersize=1)
+#    plt.title(det_id,fontsize=20)   
+#    plt.show()
+#
+#
+# #%%
+#    
+#    
+#    
+#detector_image = plt.figure(figsize = (plot_width*2, plot_height*2))
+##    detector_image = plt.figure()
+#ax = plt.axes()
+#plt.imshow(det_int[det_id],cmap='inferno')
+#plt.colorbar()
+##plt.ylim(bottom = 1900,top= 2000)
+##plt.xlim(left = 850, right = 950)
+#plt.title(det_id,fontsize=20)
