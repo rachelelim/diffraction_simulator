@@ -5,7 +5,7 @@ Created on Fri Sep 14 13:02:06 2018
 
 @author: rachellim
 
-Simulates diffraction for an arbitrarily defined Gaussian of energies and 
+Simulates diffraction for an arbitrarily defined Gaussian of energies and
 an arbitrarily defined amount of uniform misorientation
 
 Takes config, redesigned energy loops so it's faster.
@@ -152,8 +152,8 @@ for det_id in instr.detectors:
     det_Y = det_params[det_id]['detector']['pixels']['rows']
     diff_coord[det_id] = np.empty([0,2])
     diff_angs[det_id] = np.empty([0])
-    det_int[det_id] = np.zeros([int((ome_stop-ome_start)/ome_step)+1,det_Y,det_X],dtype = np.uint16)
-    
+    det_int[det_id] = np.zeros([int((ome_stop-ome_start)/ome_step)+1,det_Y,det_X],dtype = np.uint32)
+
 
 ##simulates for energy bandwidth##
 for energy_index in range(0,len(energy)):
@@ -161,9 +161,9 @@ for energy_index in range(0,len(energy)):
     matl.beamEnergy = energy[energy_index]
     print('Energy = %.5f keV (%d of %d)' %(matl.beamEnergy, energy_index, num_bins))
     plane_data = matl.planeData
-    
+
     weight = f[energy_index].astype(np.uint16)
-    
+
     rot_start = time.time()
     # for each detector key, returns valid_ids, valid_hkls, valid_angs, valid_xys, ang_pixel_size
     rotation_series = instr.simulate_rotation_series(plane_data,gparm_list,ome_ranges=ome_ranges)
@@ -171,18 +171,18 @@ for energy_index in range(0,len(energy)):
     print('\t Rotation Series took %.3f' %(rot_end-rot_start))
 
     for det_id in instr.detectors:
-        
+
         det_X = det_params[det_id]['detector']['pixels']['columns']
-        det_Y = det_params[det_id]['detector']['pixels']['rows']      
-        
+        det_Y = det_params[det_id]['detector']['pixels']['rows']
+
         XY_pix,ome_angs = diffutil.diffraction_XY(rotation_series,det_id,det_params,ome_ranges,ome_step)
 
-        
+
         for grain in range(0,len(XY_pix)):
             det_int[det_id][(ome_angs[grain]).astype(np.uint16),(XY_pix[grain][1]).astype(np.uint16),(XY_pix[grain][0]).astype(np.uint16)] += weight
 #            diff_coord[det_id] = np.vstack([diff_coord[det_id],XY_pix[grain].T])
-#            diff_angs[det_id] = np.hstack([diff_angs[det_id],ome_angs[grain]]) 
-   
+#            diff_angs[det_id] = np.hstack([diff_angs[det_id],ome_angs[grain]])
+
     end_energy = time.time()
     print ('\t took %.3f seconds' %(end_energy - start_energy))
 
@@ -211,23 +211,23 @@ print('Saving frame-cache took %.3f seconds' %(end_write-start_write))
 ##%% plotting
 #for det_id in instr.detectors:
 #    pix_size = det_params[det_id]['detector']['pixels']['size']
-#    
-#    
+#
+#
 #    plot_width, plot_height = diffutil.plot_shape(det_params,det_id)
-#    
+#
 #    XY = diff_coord[det_id]*pix_size #change back to micron coords
-#    
-#    
+#
+#
 #    fig = plt.figure(figsize = (plot_width, plot_height))
 #    plt.plot(XY[:,0],XY[:,1],'.',markersize=1)
-#    plt.title(det_id,fontsize=20)   
+#    plt.title(det_id,fontsize=20)
 #    plt.show()
 #
 #
 # #%%
-#    
-#    
-#    
+#
+#
+#
 #detector_image = plt.figure(figsize = (plot_width*2, plot_height*2))
 ##    detector_image = plt.figure()
 #ax = plt.axes()
